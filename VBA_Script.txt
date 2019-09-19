@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Sub StockAnalyzer()
         
     'Declare variable for Worksheet
@@ -126,4 +127,134 @@ Sub StockAnalyzer()
     
     
     
+=======
+Sub StockAnalyzer()
+        
+    'Declare variable for Worksheet
+    Dim ws As Worksheet
+    
+    'Set code to cycle through all sheets
+    For Each ws In ThisWorkbook.Worksheets
+    
+    'Lable columns
+    ws.Cells(1, 9).Value = "Ticker"
+    ws.Cells(1, 10).Value = "Yearly Change"
+    ws.Cells(1, 11).Value = "Percent Change"
+    ws.Cells(1, 12).Value = "Total Stock Volume"
+    
+    'Declare result columns
+    Dim Ticker As String
+    Dim Yearly_Change As Variant
+    Dim Percent_Change As Variant
+    Dim Total As Variant
+    Dim Rowcount As Long
+    Dim Stock_Open As Double
+    Dim Stock_Close As Double
+    
+        
+    'Set begining values for results
+    Ticker = " "
+    TickerCount = 1
+    Yearly_Change = 0
+    Percent_Change = 0
+    Total = 0
+    Rowcount = 2
+    
+    'Declare last row
+    Dim Last_Row As Long
+    
+    'Find last row
+    Last_Row = ws.Cells(Rows.Count, 1).End(xlUp).Row
+    
+    'Set last row for Percent Change formula
+    Last_Percent = ws.Cells(Rows.Count, 10).End(xlUp).Row
+    
+    
+    'Select data set
+    For i = 2 To Last_Row
+        
+    
+        'Selecting unique ticker names
+        If ws.Cells(i, 1).Value <> ws.Cells(i - 1, 1).Value Then
+        TickerCount = TickerCount + 1
+            
+            'Get first open price
+            Stock_Open = ws.Cells(i, 3).Value
+            
+            ' Set the current Ticker to the new Ticker name
+            Ticker = ws.Cells(i, 1).Value
+            ws.Cells(TickerCount, 9).Value = Ticker
+            
+                'Setting first total value
+                Total = ws.Cells(i, 7).Value
+                ws.Cells(TickerCount, 12) = Total
+            
+              Else
+                   
+                'Adding in the rest of the data for each ticker tag
+                Total = Total + ws.Cells(i, 7).Value
+                ws.Cells(TickerCount, 12).Value = Total
+                    
+             
+            
+             End If
+             
+             
+      If ws.Cells(i, 1).Value <> ws.Cells(i + 1, 1).Value Then
+            
+        ' Get Stock Close value
+        Stock_Close = ws.Cells(i, 6).Value
+            
+        ' Subtract year open from year close
+        Yearly_Change = Stock_Close - Stock_Open
+                    
+        ' Apply answers to column
+        ws.Cells(TickerCount, 10).Value = Yearly_Change
+                             
+       
+        
+        
+               
+        End If
+        
+        'Write the formula for finding the percentage change
+        
+       
+        If Stock_Open = 0 Or Stock_Close = 0 Then
+        Percent_Change = "0"
+        ws.Cells(TickerCount, 11).Value = Percent_Change
+        
+        
+        Else
+        'Divide yearly change by year open price
+        Percent_Change = Yearly_Change / Stock_Open
+        ws.Cells(TickerCount, 11).Value = Percent_Change
+        ws.Cells(TickerCount, 11).NumberFormat = "0.00%"
+        
+        End If
+        
+        'Format the interior color index for cells depending on final price change
+        Next i
+        
+        'Set the paramaters of data
+        For i = 2 To Last_Percent
+        
+        'Set the reults for negative price changes
+        If ws.Cells(i, 11).Value <= 0 Then
+        ws.Cells(i, 11).Interior.ColorIndex = 3
+        
+        'Set the results for posotive price changes
+        ElseIf ws.Cells(i, 11).Value > 0 Then
+        ws.Cells(i, 11).Interior.ColorIndex = 4
+                        
+        End If
+                  
+        Next i
+    'Set all cells to adjust based on size of data
+    ws.Cells.EntireColumn.AutoFit
+    Next ws
+    
+    
+    
+>>>>>>> 0bf58c835a9fdea7e8ce4a3e4577d75e6f637ab7
 End Sub
